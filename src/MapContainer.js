@@ -7,11 +7,11 @@ import escaperegexp from 'escape-string-regexp'
 //Exports the Map and the markers
 export class MapContainer extends React.Component {
   state = {
-    activeMaker: {}, selectedPlace: {}, InfoWindowShow: false
+  makerIsActive : {}, choicedPlace: {}, InfoWindowShow: false
   }
 
    render() {
-    const reg = new RegExp(escaperegexp(this.props.queryText).toLowerCase().trim())
+    const regis = new RegExp(escaperegexp(this.props.queryText).toLowerCase().trim())
     const bound = new this.props.google.maps.LatLngBounds()
     for (let i = 0; i < this.props.locations.length; i++) {
       bound.extend(this.props.locations[i].position)
@@ -23,15 +23,13 @@ export class MapContainer extends React.Component {
         initialCenter={{ lat: 34.0, lng: 33.0}}
         google={this.props.google}
         bounds={bound}>
-        
           {this.props.locations.filter(location => {
-            return reg.test(location.title.toLowerCase())
+            return regis.test(location.title.toLowerCase())
           })
         
           .map(location => {
             return (
-              <Marker
-                key={location.id}
+              <Marker  key={location.id}
                 position={{ lat: location.position.lat, lng: location.position.lng}}
                 title={location.title}
                 onClick={this.onClickMarker}
@@ -39,24 +37,24 @@ export class MapContainer extends React.Component {
                 address={location.address}
                 state={location.state}
                 coordinates={location.coordinates}
-                />
-            )
+                /> )
           })}
        
-          <InfoWindow className="InfoWin" marker={this.state.activeMaker} visible={this.state.InfoWindowShow}>
-            <body>
-              <header>
-                <h1>{this.state.selectedPlace.title}</h1>
-                <h3><span aria-labelledby="category">Category</span>: <span id="category">{!this.state.selectedPlace.category ? 'N/A' : this.state.selectedPlace.category}</span></h3>
-              </header>
-              <main>
-                <ul>
-                  <li><span aria-labelledby="place-address">Address</span>: <span id="place-address">{!this.state.selectedPlace.address ? 'N/A' : this.state.selectedPlace.address}</span></li>
-                  <li><span aria-labelledby="place-state">State</span>: <span id="place-state">{!this.state.selectedPlace.state ? 'N/A' : this.state.selectedPlace.state}</span></li>
-                  <li><span aria-labelledby="place-coordinates">Coordinates</span>: <span id="place-coords">{this.state.selectedPlace.coordinates}</span></li>
-                </ul>
-              </main>
-            </body>
+          <InfoWindow className="InfoWin" marker={this.state.makerIsActive} visible={this.state.InfoWindowShow}>
+              <body>
+                <header>
+                  <h1>{this.state.choicedPlace.title}
+                  </h1>
+                  <h3><span aria-labelledby="category">Category</span>: <span id="category">{!this.state.choicedPlace.category ? 'N/A' : this.state.choicedPlace.category}</span></h3>
+                </header>
+                <main>
+                  <ul>
+                    <li><span aria-labelledby="place-address">Address</span>: <span id="place-address">{!this.state.choicedPlace.address ? 'N/A' : this.state.choicedPlace.address}</span></li>
+                    <li><span aria-labelledby="place-state">State</span>: <span id="place-state">{!this.state.choicedPlace.state ? 'N/A' : this.state.choicedPlace.state}</span></li>
+                    <li><span aria-labelledby="place-coordinates">Coordinates</span>: <span id="place-coords">{this.state.choicedPlace.coordinates}</span></li>
+                  </ul>
+                </main>
+              </body>
           </InfoWindow>
       </Map>
     )
@@ -70,13 +68,13 @@ export class MapContainer extends React.Component {
 //Marker Clicked
   onClickMarker = (props, marker, e) => {
     this.setState({
-      InfoWindowShow: true, selectedPlace: props,activeMaker: marker, 
+      InfoWindowShow: true, choicedPlace: props,makerIsActive: marker, 
     })
   }
 //Map Clicked
   onClickMap = () => {
     this.setState({
-      InfoWindowShow : false,activeMaker: {},selectedPlace: {}
+      InfoWindowShow : false,makerIsActive: {},choicedPlace: {}
     })
   }
 }
